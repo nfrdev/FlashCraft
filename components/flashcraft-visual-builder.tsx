@@ -3,6 +3,9 @@
 import * as React from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ComponentLibrary } from '@/components/component-library/ComponentLibrary';
+import { PagesPanel } from '@/components/pages-manager/PagesPanel';
+import type { PageItemModel } from '@/components/pages-manager/constants';
+import { StatusBadge } from '@/components/pages-manager/StatusBadge';
 import { toast } from 'sonner';
 
 import {
@@ -249,7 +252,7 @@ const canvasSections: CanvasSection[] = [
   },
 ];
 
-function EditorHeader() {
+function EditorHeader({ activePage }: { activePage: PageItemModel | null }) {
   return (
     <header className="border-b border-white/10 bg-zinc-950/80 backdrop-blur-2xl">
       <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 lg:px-6">
@@ -262,6 +265,24 @@ function EditorHeader() {
             <p className="text-[0.65rem] uppercase tracking-[0.35em] text-zinc-500">Visual Builder</p>
           </div>
         </div>
+
+        {/* Active Page Info */}
+        {activePage && (
+          <div className="hidden items-center gap-2.5 rounded-2xl border border-white/8 bg-zinc-900/60 px-3.5 py-1.5 md:flex">
+            <span className="text-[0.72rem] font-medium text-zinc-200">{activePage.name}</span>
+            <span className="text-zinc-700">·</span>
+            <span className="text-[0.62rem] text-zinc-500">{activePage.path}</span>
+            <span className="text-zinc-700">·</span>
+            <StatusBadge status={activePage.status} size="sm" />
+            {activePage.lastModified && (
+              <>
+                <span className="text-zinc-700">·</span>
+                <span className="text-[0.58rem] text-zinc-600">{activePage.lastModified}</span>
+              </>
+            )}
+          </div>
+        )}
+
         <div className="flex flex-wrap items-center gap-2">
           <Button variant="outline" size="sm" className="gap-2">
             <MonitorSmartphone className="size-4" /> Responsive
@@ -291,7 +312,7 @@ function EditorToolbar() {
         </Button>
         <div className="ml-1 h-7 w-px bg-white/10" />
         <div className="rounded-full border border-violet-400/20 bg-violet-500/10 px-3 py-1 text-[0.7rem] uppercase tracking-[0.3em] text-violet-200">
-          Project • Launch Kit
+          Project · Launch Kit
         </div>
         <Button size="sm" className="gap-2">
           <CircleDashed className="size-4" /> Publish
@@ -324,12 +345,14 @@ function EditorSidebar({
   activeTab,
   onTabChange,
   collapsed,
+  onPageSelect,
   onCollapse,
 }: {
   activeTab: SidebarTabId;
   onTabChange: (id: SidebarTabId) => void;
   collapsed: boolean;
   onCollapse: () => void;
+  onPageSelect?: (page: PageItemModel | null) => void;
 }) {
   const activeSidebar = sidebarTabs.find((tab) => tab.id === activeTab) ?? sidebarTabs[0];
   const Icon = activeSidebar.icon;
@@ -400,13 +423,7 @@ function EditorSidebar({
             )}
 
             {activeTab === 'pages' ? (
-              <div className="space-y-2">
-                {['Homepage', 'Pricing', 'About', 'Case Study'].map((item, index) => (
-                  <div key={item} className={cn('rounded-[1rem] border px-3 py-2 text-sm', index === 0 ? 'border-violet-400/25 bg-violet-500/10 text-white' : 'border-white/10 bg-zinc-900/70 text-zinc-300')}>
-                    {item}
-                  </div>
-                ))}
-              </div>
+              <PagesPanel onPageSelect={onPageSelect} />
             ) : null}
 
             {activeTab === 'sections' ? (
@@ -701,6 +718,7 @@ export function FlashCraftVisualBuilder() {
   const [showGrid, setShowGrid] = React.useState(true);
   const [zoom, setZoom] = React.useState(100);
   const [selectedSection, setSelectedSection] = React.useState('hero');
+  const [activePage, setActivePage] = React.useState<PageItemModel | null>(null);
 
   const handleZoomOut = () => setZoom((value) => Math.max(75, value - 10));
   const handleZoomIn = () => setZoom((value) => Math.min(125, value + 10));
@@ -708,7 +726,7 @@ export function FlashCraftVisualBuilder() {
   return (
     <div className="min-h-[80vh] rounded-[2rem] border border-white/10 bg-[radial-gradient(circle_at_top,rgba(99,102,241,0.2),transparent_35%),linear-gradient(135deg,#05070c_0%,#090b12_45%,#03050a_100%)] p-2 text-zinc-100 shadow-[0_30px_140px_rgba(0,0,0,0.35)]">
       <div className="flex h-full min-h-[78vh] flex-col overflow-hidden rounded-[1.75rem] border border-white/10 bg-zinc-950/70">
-        <EditorHeader />
+        <EditorHeader activePage={activePage} />
         <EditorToolbar />
 
         <ResizablePanelGroup orientation="horizontal" className="flex-1 overflow-hidden">
@@ -718,6 +736,7 @@ export function FlashCraftVisualBuilder() {
               onTabChange={setActiveSidebarTab}
               collapsed={leftCollapsed}
               onCollapse={() => setLeftCollapsed((value) => !value)}
+              onPageSelect={setActivePage}
             />
           </ResizablePanel>
 
