@@ -1,15 +1,16 @@
-﻿'use client';
+'use client';
 
 import * as React from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
+import { ComponentLibrary } from '@/components/component-library/ComponentLibrary';
+import { toast } from 'sonner';
+
 import {
-  BarChart3,
   Blocks,
   Box,
   ChevronDown,
   ChevronRight,
   CircleDashed,
-  Copy,
   Database,
   Eye,
   ImageIcon,
@@ -79,64 +80,8 @@ const sidebarTabs: SidebarTab[] = [
   { id: 'history', label: 'History', icon: Box, description: 'Recent snapshots' },
 ];
 
-type CategoryItem = {
-  id: string;
-  label: string;
-  description: string;
-  icon: LucideIcon;
-};
 
-type ComponentItem = {
-  id: string;
-  name: string;
-  category: string;
-  description: string;
-  tags: string[];
-  style: string;
-  industry: string;
-  recentlyUsed: boolean;
-  premium: boolean;
-  previewClass: string;
-  summary: string;
-};
 
-type IndustryCollection = {
-  id: string;
-  name: string;
-  description: string;
-  previewClass: string;
-};
-
-const libraryCategories: CategoryItem[] = [
-  { id: 'hero', label: 'Hero', description: 'Introductory layouts', icon: Sparkles },
-  { id: 'sections', label: 'Sections', description: 'Reusable page blocks', icon: PanelTop },
-  { id: 'features', label: 'Features', description: 'Proof and value points', icon: Blocks },
-  { id: 'content', label: 'Content', description: 'Editorial and narrative layouts', icon: Type },
-  { id: 'pricing', label: 'Pricing', description: 'Plans, offers, and tiers', icon: BarChart3 },
-  { id: 'forms', label: 'Forms', description: 'Lead capture and onboarding', icon: SquarePen },
-  { id: 'footer', label: 'Footer', description: 'Wrap-up and utility blocks', icon: LayoutGrid },
-  { id: 'gallery', label: 'Gallery', description: 'Visual storytelling patterns', icon: ImageIcon },
-];
-
-const componentCatalog: ComponentItem[] = [
-  { id: 'launch-hero', name: 'Launch Hero', category: 'hero', description: 'A cinematic opening block for product launches.', tags: ['Premium', 'Conversion'], style: 'Editorial', industry: 'Startup', recentlyUsed: true, premium: true, previewClass: 'from-violet-500/25 via-fuchsia-500/10 to-cyan-500/15', summary: 'High-contrast hero with social proof and CTA moments.' },
-  { id: 'story-section', name: 'Story Section', category: 'sections', description: 'An elegant narrative layout for brand storytelling.', tags: ['Narrative', 'Editorial'], style: 'Minimal', industry: 'Agency', recentlyUsed: true, premium: false, previewClass: 'from-cyan-500/20 to-violet-500/10', summary: 'Balanced content and visual storytelling for polished landing pages.' },
-  { id: 'proof-grid', name: 'Proof Grid', category: 'features', description: 'Feature cards with strong visual hierarchy.', tags: ['Proof', 'Trust'], style: 'Bold', industry: 'SaaS', recentlyUsed: false, premium: true, previewClass: 'from-amber-500/20 to-fuchsia-500/10', summary: 'A confident way to show capability, integration, and value.' },
-  { id: 'editorial-stack', name: 'Editorial Stack', category: 'content', description: 'Thoughtful media + copy blocks for editorial pages.', tags: ['Long Form', 'Visual'], style: 'Soft', industry: 'Portfolio', recentlyUsed: true, premium: true, previewClass: 'from-emerald-500/20 to-cyan-500/10', summary: 'A magazine-like composition with flexible typography and spacing.' },
-  { id: 'plan-cards', name: 'Plan Cards', category: 'pricing', description: 'Flexible pricing cards for growing product teams.', tags: ['Plans', 'Launch'], style: 'Modern', industry: 'SaaS', recentlyUsed: false, premium: false, previewClass: 'from-fuchsia-500/20 to-amber-500/10', summary: 'A clean tier system with primary, secondary, and enterprise options.' },
-  { id: 'onboarding-form', name: 'Onboarding Form', category: 'forms', description: 'Beautiful lead capture for product demos and waitlists.', tags: ['Lead Gen', 'Form'], style: 'Minimal', industry: 'Startup', recentlyUsed: true, premium: true, previewClass: 'from-zinc-500/20 to-violet-500/15', summary: 'Polished form states designed to feel lightweight and premium.' },
-  { id: 'footer-compact', name: 'Footer Compact', category: 'footer', description: 'A refined footer designed for product and brand recall.', tags: ['Utility', 'Simple'], style: 'Minimal', industry: 'Restaurant', recentlyUsed: false, premium: false, previewClass: 'from-white/10 to-violet-500/10', summary: 'Compact navigation, support links, and trust cues in one block.' },
-  { id: 'gallery-mosaic', name: 'Gallery Mosaic', category: 'gallery', description: 'A premium image grid for curated visual storytelling.', tags: ['Media', 'Editorial'], style: 'Editorial', industry: 'Photography', recentlyUsed: true, premium: true, previewClass: 'from-violet-500/15 to-emerald-500/10', summary: 'A balanced collage that feels cinematic and understated.' },
-];
-
-const industryCollections: IndustryCollection[] = [
-  { id: 'restaurant', name: 'Restaurant', description: 'Warm, tactile systems for hospitality launch pages.', previewClass: 'from-amber-500/20 to-rose-500/10' },
-  { id: 'coffee', name: 'Coffee Shop', description: 'Soft, approachable sections for neighborhood brands.', previewClass: 'from-emerald-500/15 to-amber-500/10' },
-  { id: 'agency', name: 'Agency', description: 'High-contrast layouts for service-led storytelling.', previewClass: 'from-cyan-500/20 to-slate-500/10' },
-  { id: 'portfolio', name: 'Portfolio', description: 'Minimal components for personal brand showcases.', previewClass: 'from-violet-500/15 to-slate-500/10' },
-  { id: 'saas', name: 'SaaS', description: 'Conversion-first blocks with clarity and momentum.', previewClass: 'from-fuchsia-500/20 to-cyan-500/10' },
-  { id: 'healthcare', name: 'Healthcare', description: 'Calm and accessible patterns designed for trust.', previewClass: 'from-sky-500/15 to-emerald-500/10' },
-];
 
 const devicePresets: Array<{ id: DeviceId; label: string; icon: LucideIcon; widthClass: string; minHeightClass: string }> = [
   { id: 'desktop', label: 'Desktop', icon: Monitor, widthClass: 'max-w-[1180px]', minHeightClass: 'min-h-[760px]' },
@@ -375,191 +320,6 @@ function ShareIcon() {
   return <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M8 12h8" /><path d="M12 8v8" /><path d="M4 12a4 4 0 1 1 0-8h1" /><path d="M20 20a4 4 0 1 0 0-8h-1" /></svg>;
 }
 
-function Tag({ label }: { label: string }) {
-  return (
-    <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-[0.62rem] uppercase tracking-[0.25em] text-zinc-400">
-      {label}
-    </span>
-  );
-}
-
-function Badge({ label, tone = 'default' }: { label: string; tone?: 'default' | 'accent' }) {
-  const toneClasses = tone === 'accent'
-    ? 'border-violet-400/20 bg-violet-500/10 text-violet-200'
-    : 'border-white/10 bg-zinc-900/70 text-zinc-400';
-
-  return (
-    <span className={cn('rounded-full border px-2.5 py-1 text-[0.62rem] uppercase tracking-[0.25em]', toneClasses)}>
-      {label}
-    </span>
-  );
-}
-
-function CategoryGroup({
-  category,
-  isExpanded,
-  selectedCategory,
-  onToggle,
-  onSelectCategory,
-}: {
-  category: CategoryItem;
-  isExpanded: boolean;
-  selectedCategory: string;
-  onToggle: () => void;
-  onSelectCategory: (category: string) => void;
-}) {
-  const Icon = category.icon;
-  return (
-    <div className="rounded-[1rem] border border-white/10 bg-zinc-900/70 px-3 py-2">
-      <button onClick={onToggle} className="flex w-full items-center justify-between text-left text-sm text-zinc-300">
-        <span className="flex items-center gap-2">
-          <Icon className="size-4 text-zinc-500" />
-          {category.label}
-        </span>
-        {isExpanded ? <ChevronDown className="size-4 text-zinc-500" /> : <ChevronRight className="size-4 text-zinc-500" />}
-      </button>
-      <AnimatePresence initial={false}>
-        {isExpanded ? (
-          <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="overflow-hidden">
-            <div className="mt-3 space-y-2">
-              <button onClick={() => onSelectCategory('all')} className={cn('w-full rounded-[0.8rem] border px-3 py-2 text-left text-sm transition', selectedCategory === 'all' ? 'border-violet-400/20 bg-violet-500/10 text-white' : 'border-white/10 bg-white/5 text-zinc-400 hover:border-white/20 hover:text-zinc-200')}>
-                Browse all {category.label.toLowerCase()}s
-              </button>
-              {componentCatalog.filter((item) => item.category === category.id).map((item) => (
-                <button key={item.id} onClick={() => onSelectCategory(item.category)} className={cn('w-full rounded-[0.8rem] border px-3 py-2 text-left text-sm transition', selectedCategory === item.category ? 'border-violet-400/20 bg-violet-500/10 text-white' : 'border-white/10 bg-white/5 text-zinc-400 hover:border-white/20 hover:text-zinc-200')}>
-                  {item.name}
-                </button>
-              ))}
-            </div>
-          </motion.div>
-        ) : null}
-      </AnimatePresence>
-    </div>
-  );
-}
-
-function ComponentCard({
-  component,
-  selected,
-  favorite,
-  onSelect,
-  onToggleFavorite,
-}: {
-  component: ComponentItem;
-  selected: boolean;
-  favorite: boolean;
-  onSelect: () => void;
-  onToggleFavorite: () => void;
-}) {
-  return (
-    <motion.button
-      layout
-      whileHover={{ y: -3, scale: 1.01 }}
-      onClick={onSelect}
-      className={cn('group rounded-[1.2rem] border border-white/10 bg-zinc-900/70 p-3 text-left transition', selected ? 'border-violet-400/30 bg-violet-500/10 shadow-[0_0_0_1px_rgba(167,139,250,0.18)]' : 'hover:border-white/20 hover:bg-zinc-900/90')}
-    >
-      <div className={`mb-3 rounded-[1rem] border border-white/10 bg-gradient-to-br ${component.previewClass} p-4`}>
-        <div className="rounded-[0.9rem] border border-white/10 bg-zinc-950/80 p-3">
-          <div className="mb-3 flex items-center justify-between text-[0.6rem] uppercase tracking-[0.25em] text-zinc-500">
-            <span>{component.category}</span>
-            {component.premium ? <Badge label="Premium" tone="accent" /> : <Badge label="UI" />}
-          </div>
-          <div className="space-y-2">
-            <div className="h-2.5 w-20 rounded-full bg-white/20" />
-            <div className="h-2.5 w-16 rounded-full bg-white/10" />
-            <div className="h-2.5 w-24 rounded-full bg-white/10" />
-          </div>
-        </div>
-      </div>
-      <div className="flex items-start justify-between gap-2">
-        <div>
-          <p className="text-sm font-semibold text-white">{component.name}</p>
-          <p className="mt-1 text-xs leading-6 text-zinc-500">{component.description}</p>
-        </div>
-        <button
-          onClick={(event) => {
-            event.stopPropagation();
-            onToggleFavorite();
-          }}
-          className="rounded-full border border-white/10 bg-zinc-950/70 p-1.5 text-zinc-400 transition hover:text-pink-300"
-          aria-label={`Toggle ${component.name} favorite`}
-        >
-          <span className={favorite ? 'text-pink-300' : 'text-zinc-400'}>♡</span>
-        </button>
-      </div>
-      <div className="mt-3 flex flex-wrap gap-2">
-        {component.tags.slice(0, 2).map((tag) => (
-          <Tag key={tag} label={tag} />
-        ))}
-      </div>
-      {component.recentlyUsed ? <div className="mt-3 inline-flex rounded-full border border-emerald-400/20 bg-emerald-500/10 px-2.5 py-1 text-[0.6rem] uppercase tracking-[0.25em] text-emerald-300">Recently used</div> : null}
-      <div className="mt-3 flex items-center justify-between text-[0.65rem] uppercase tracking-[0.25em] text-zinc-500">
-        <span>Quick add</span>
-        <span className="rounded-full border border-white/10 bg-zinc-950/70 px-2 py-1">Double click</span>
-      </div>
-    </motion.button>
-  );
-}
-
-function PreviewPanel({ component }: { component: ComponentItem }) {
-  return (
-    <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="rounded-[1.2rem] border border-white/10 bg-zinc-900/80 p-4">
-      <div className={`rounded-[1rem] border border-white/10 bg-gradient-to-br ${component.previewClass} p-4`}>
-        <div className="rounded-[1rem] border border-white/10 bg-zinc-950/80 p-4">
-          <div className="mb-4 flex items-center justify-between text-[0.6rem] uppercase tracking-[0.25em] text-zinc-500">
-            <span>Live preview</span>
-            <Badge label={component.style} tone="accent" />
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {component.tags.map((tag) => (
-              <Tag key={tag} label={tag} />
-            ))}
-          </div>
-        </div>
-      </div>
-      <div className="mt-4">
-        <h3 className="text-sm font-semibold text-white">{component.name}</h3>
-        <p className="mt-2 text-sm leading-7 text-zinc-400">{component.description}</p>
-        <p className="mt-3 text-sm leading-7 text-zinc-500">{component.summary}</p>
-      </div>
-      <div className="mt-4 grid gap-2 text-sm text-zinc-400">
-        <div className="rounded-[0.9rem] border border-white/10 bg-white/5 px-3 py-2">Variants • 3 responsive layouts</div>
-        <div className="rounded-[0.9rem] border border-white/10 bg-white/5 px-3 py-2">Properties • CTA, spacing, typography</div>
-        <div className="rounded-[0.9rem] border border-white/10 bg-white/5 px-3 py-2">Suggested use • launch pages, product storytelling</div>
-      </div>
-    </motion.div>
-  );
-}
-
-function CollectionCard({ item }: { item: IndustryCollection }) {
-  return (
-    <div className={`rounded-[1rem] border border-white/10 bg-gradient-to-br ${item.previewClass} p-4`}>
-      <div className="rounded-[0.9rem] border border-white/10 bg-zinc-950/80 p-3">
-        <p className="text-sm font-semibold text-white">{item.name}</p>
-        <p className="mt-2 text-sm leading-7 text-zinc-400">{item.description}</p>
-      </div>
-    </div>
-  );
-}
-
-function EmptyState({ query }: { query: string }) {
-  return (
-    <div className="rounded-[1rem] border border-dashed border-white/10 bg-white/5 p-4 text-sm leading-7 text-zinc-500">
-      No components matched “{query}”. Try another search or clear filters.
-    </div>
-  );
-}
-
-function LoadingSkeleton() {
-  return (
-    <div className="space-y-3">
-      {[0, 1, 2].map((item) => (
-        <div key={item} className="h-20 animate-pulse rounded-[1rem] border border-white/10 bg-zinc-900/70" />
-      ))}
-    </div>
-  );
-}
-
 function EditorSidebar({
   activeTab,
   onTabChange,
@@ -573,33 +333,6 @@ function EditorSidebar({
 }) {
   const activeSidebar = sidebarTabs.find((tab) => tab.id === activeTab) ?? sidebarTabs[0];
   const Icon = activeSidebar.icon;
-  const [searchQuery, setSearchQuery] = React.useState('');
-  const [selectedCategory, setSelectedCategory] = React.useState('all');
-  const [selectedStyle, setSelectedStyle] = React.useState('all');
-  const [selectedIndustry, setSelectedIndustry] = React.useState('all');
-  const [showFavorites, setShowFavorites] = React.useState(false);
-  const [showRecent, setShowRecent] = React.useState(false);
-  const [showNewest, setShowNewest] = React.useState(false);
-  const [expandedCategory, setExpandedCategory] = React.useState<string>('hero');
-  const [selectedComponentId, setSelectedComponentId] = React.useState(componentCatalog[0].id);
-  const [favorites, setFavorites] = React.useState<Record<string, boolean>>({});
-
-  const filteredComponents = React.useMemo(() => {
-    const query = searchQuery.toLowerCase();
-    return componentCatalog.filter((component) => {
-      const matchesQuery = !query || [component.name, component.description, component.tags.join(' '), component.summary].join(' ').toLowerCase().includes(query);
-      const matchesCategory = selectedCategory === 'all' || component.category === selectedCategory;
-      const matchesStyle = selectedStyle === 'all' || component.style.toLowerCase() === selectedStyle.toLowerCase();
-      const matchesIndustry = selectedIndustry === 'all' || component.industry.toLowerCase() === selectedIndustry.toLowerCase();
-      const matchesFavorite = !showFavorites || favorites[component.id];
-      const matchesRecent = !showRecent || component.recentlyUsed;
-      const matchesNewest = !showNewest || component.premium;
-      return matchesQuery && matchesCategory && matchesStyle && matchesIndustry && matchesFavorite && matchesRecent && matchesNewest;
-    });
-  }, [favorites, searchQuery, selectedCategory, selectedIndustry, selectedStyle, showFavorites, showNewest, showRecent]);
-
-  const selectedComponent = filteredComponents.find((component) => component.id === selectedComponentId) ?? filteredComponents[0] ?? componentCatalog[0];
-
   return (
     <div className="flex h-full flex-col bg-zinc-950/75">
       <div className="flex items-center justify-between border-b border-white/10 px-4 py-3">
@@ -641,115 +374,30 @@ function EditorSidebar({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.2, ease: 'easeOut' }}
-            className="flex-1 overflow-y-auto p-4"
+            className="flex-1 overflow-y-auto p-0"
           >
-            <div className="mb-4 rounded-[1.2rem] border border-white/10 bg-white/5 p-4">
-              <div className="mb-2 flex items-center gap-2 text-[0.68rem] uppercase tracking-[0.3em] text-zinc-500">
-                <Icon className="size-3.5 text-violet-300" /> {activeSidebar.label}
-              </div>
-              <p className="text-sm leading-7 text-zinc-400">{activeSidebar.description}</p>
-            </div>
-
             {activeTab === 'components' ? (
-              <div className="space-y-4">
-                <div className="rounded-[1.2rem] border border-white/10 bg-zinc-900/80 p-3">
-                  <div className="mb-3 flex items-center gap-2 text-[0.65rem] uppercase tracking-[0.3em] text-zinc-500">
-                    <Search className="size-3.5 text-violet-300" /> Search library
+              <ComponentLibrary
+                onQuickAdd={(comp) => {
+                  toast.success(`Quick Added: ${comp.name}`, {
+                    description: `Successfully added "${comp.name}" to the responsive workspace builder layout.`,
+                    action: {
+                      label: 'Undo',
+                      onClick: () => toast.info('Action reverted'),
+                    },
+                  });
+                }}
+              />
+            ) : (
+              <div className="p-4">
+                <div className="mb-4 rounded-[1.2rem] border border-white/10 bg-white/5 p-4">
+                  <div className="mb-2 flex items-center gap-2 text-[0.68rem] uppercase tracking-[0.3em] text-zinc-500">
+                    <Icon className="size-3.5 text-violet-300" /> {activeSidebar.label}
                   </div>
-                  <div className="relative">
-                    <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-zinc-500" />
-                    <input
-                      value={searchQuery}
-                      onChange={(event) => setSearchQuery(event.target.value)}
-                      placeholder="Search hero, pricing, footer..."
-                      className="w-full rounded-[0.95rem] border border-white/10 bg-zinc-950/80 py-2 pl-9 pr-3 text-sm text-zinc-200 outline-none ring-0"
-                    />
-                  </div>
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    <Button variant="outline" size="sm" className="gap-2" onClick={() => setShowFavorites((value) => !value)}>
-                      <span className="text-pink-300">♡</span> Favorites
-                    </Button>
-                    <Button variant="outline" size="sm" className="gap-2" onClick={() => setShowRecent((value) => !value)}>
-                      <span className="text-emerald-300">⏱</span> Recently Used
-                    </Button>
-                    <Button variant="outline" size="sm" className="gap-2" onClick={() => setShowNewest((value) => !value)}>
-                      <span className="text-violet-300">✦</span> Newest
-                    </Button>
-                  </div>
-                </div>
-
-                <div className="rounded-[1.2rem] border border-white/10 bg-zinc-900/80 p-3">
-                  <div className="mb-3 flex items-center justify-between">
-                    <p className="text-[0.65rem] uppercase tracking-[0.3em] text-zinc-500">Categories</p>
-                    <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-[0.6rem] uppercase tracking-[0.25em] text-zinc-400">Expandable</span>
-                  </div>
-                  <div className="space-y-2">
-                    {libraryCategories.map((category) => (
-                      <CategoryGroup
-                        key={category.id}
-                        category={category}
-                        isExpanded={expandedCategory === category.id}
-                        selectedCategory={selectedCategory}
-                        onToggle={() => setExpandedCategory((current) => (current === category.id ? 'all' : category.id))}
-                        onSelectCategory={(categoryId) => {
-                          setSelectedCategory(categoryId);
-                          setExpandedCategory(category.id);
-                        }}
-                      />
-                    ))}
-                  </div>
-                </div>
-
-                <div className="rounded-[1.2rem] border border-white/10 bg-zinc-900/80 p-3">
-                  <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-                    <p className="text-[0.65rem] uppercase tracking-[0.3em] text-zinc-500">Filters</p>
-                    <div className="flex flex-wrap gap-2">
-                      {['all', 'minimal', 'editorial', 'modern', 'bold'].map((style) => (
-                        <button key={style} onClick={() => setSelectedStyle(style)} className={cn('rounded-full border px-2.5 py-1 text-[0.6rem] uppercase tracking-[0.25em] transition', selectedStyle === style ? 'border-violet-400/20 bg-violet-500/10 text-violet-200' : 'border-white/10 bg-white/5 text-zinc-400')}>{style === 'all' ? 'All styles' : style}</button>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    {['all', 'startup', 'saas', 'agency', 'portfolio', 'photography'].map((industry) => (
-                      <button key={industry} onClick={() => setSelectedIndustry(industry)} className={cn('rounded-full border px-2.5 py-1 text-[0.6rem] uppercase tracking-[0.25em] transition', selectedIndustry === industry ? 'border-violet-400/20 bg-violet-500/10 text-violet-200' : 'border-white/10 bg-white/5 text-zinc-400')}>{industry === 'all' ? 'All industries' : industry}</button>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="grid gap-3">
-                  {filteredComponents.length > 0 ? filteredComponents.map((component) => (
-                    <ComponentCard
-                      key={component.id}
-                      component={component}
-                      selected={selectedComponent?.id === component.id}
-                      favorite={Boolean(favorites[component.id])}
-                      onSelect={() => setSelectedComponentId(component.id)}
-                      onToggleFavorite={() => setFavorites((current) => ({ ...current, [component.id]: !current[component.id] }))}
-                    />
-                  )) : <EmptyState query={searchQuery} />}
-                </div>
-
-                <div className="rounded-[1.2rem] border border-white/10 bg-zinc-900/80 p-3">
-                  <div className="mb-3 flex items-center justify-between">
-                    <p className="text-[0.65rem] uppercase tracking-[0.3em] text-zinc-500">Preview</p>
-                    <Badge label="Ready" tone="accent" />
-                  </div>
-                  {selectedComponent ? <PreviewPanel component={selectedComponent} /> : <LoadingSkeleton />}
-                </div>
-
-                <div className="rounded-[1.2rem] border border-white/10 bg-zinc-900/80 p-3">
-                  <div className="mb-3 flex items-center justify-between">
-                    <p className="text-[0.65rem] uppercase tracking-[0.3em] text-zinc-500">Industry collections</p>
-                    <Badge label="Curated" />
-                  </div>
-                  <div className="grid gap-2">
-                    {industryCollections.map((item) => (
-                      <CollectionCard key={item.id} item={item} />
-                    ))}
-                  </div>
+                  <p className="text-sm leading-7 text-zinc-400">{activeSidebar.description}</p>
                 </div>
               </div>
-            ) : null}
+            )}
 
             {activeTab === 'pages' ? (
               <div className="space-y-2">
