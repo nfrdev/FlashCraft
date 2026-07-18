@@ -1,11 +1,11 @@
 ﻿'use client';
 
 import * as React from 'react';
-import { motion } from 'framer-motion';
+import { motion, type HTMLMotionProps } from 'framer-motion';
 import type { LucideIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-interface FlashcraftSurfaceProps extends React.ComponentProps<'div'> {
+interface FlashcraftSurfaceProps extends Omit<HTMLMotionProps<'div'>, 'children'> {
   children: React.ReactNode;
 }
 

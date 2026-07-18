@@ -25,11 +25,11 @@ function ThemeSwitcher({ className, showLabel = false }: { className?: string; s
 
   return (
     <ToggleGroup
-      type="single"
-      value={activeTheme}
+      value={[activeTheme]}
       onValueChange={(value) => {
-        if (value) {
-          setTheme(value);
+        const nextValue = value.at(-1);
+        if (nextValue) {
+          setTheme(nextValue as ThemeMode);
         }
       }}
       orientation="horizontal"

@@ -247,7 +247,7 @@ function ShowcaseSection({ eyebrow, title, description, bullets, accent }: (type
   );
 }
 
-export function FlashCraftLandingPage() {
+export function FlashCraftLandingPage({ onOpenApp }: { onOpenApp?: () => void }) {
   const [activeFaq, setActiveFaq] = React.useState<number | null>(0);
   const [headlineIndex, setHeadlineIndex] = React.useState(0);
 
@@ -300,7 +300,7 @@ export function FlashCraftLandingPage() {
             <Button variant="outline" size="sm" className="hidden sm:inline-flex">
               Sign in
             </Button>
-            <Button size="sm" className="inline-flex">
+            <Button size="sm" className="inline-flex" onClick={onOpenApp}>
               Request preview
               <ArrowRight className="size-4" />
             </Button>
@@ -334,11 +334,11 @@ export function FlashCraftLandingPage() {
               </p>
             </div>
             <div className="flex flex-col gap-3 sm:flex-row">
-              <Button size="lg" className="gap-2">
+              <Button size="lg" className="gap-2" onClick={onOpenApp}>
                 Start building
                 <ArrowRight className="size-4" />
               </Button>
-              <Button variant="outline" size="lg">
+              <Button variant="outline" size="lg" onClick={onOpenApp}>
                 Watch the demo
               </Button>
             </div>

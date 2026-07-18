@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
 import { NotificationsDrawer } from '@/components/notifications-drawer';
 import { ProfileMenu } from '@/components/profile-menu';
+import { ThemeSwitcher } from '@/components/theme-switcher';
 import { cn } from '@/lib/utils';
 
 interface AppTopbarProps {
@@ -88,6 +89,7 @@ export function AppTopbar({
         >
           <SearchIcon className="size-4" />
         </Button>
+        <ThemeSwitcher className="hidden md:flex" />
         <NotificationsDrawer />
         <div className="hidden h-5 w-px bg-border/70 sm:block" />
         <ProfileMenu />

@@ -54,6 +54,9 @@ export function AppShell({ children, title = 'Workspace', breadcrumbs = [] }: Ap
 
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
+      <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-100 focus:rounded-full focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-foreground">
+        Skip to content
+      </a>
       <CommandPaletteShell open={isCommandPaletteOpen} onOpenChange={setCommandPaletteOpen} />
       <GlobalSearchOverlay open={searchOverlayOpen} onOpenChange={setSearchOverlayOpen} />
 
@@ -82,6 +85,7 @@ export function AppShell({ children, title = 'Workspace', breadcrumbs = [] }: Ap
           />
 
           <motion.main
+            id="main-content"
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.22, ease: 'easeOut' }}
